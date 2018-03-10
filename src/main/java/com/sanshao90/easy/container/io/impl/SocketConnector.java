@@ -1,7 +1,7 @@
 package com.sanshao90.easy.container.io.impl;
 
-import com.sanshao90.easy.container.config.ServerConfig;
 import com.sanshao90.easy.container.enums.ServerStatus;
+import com.sanshao90.easy.container.event.listener.EventListener;
 import com.sanshao90.easy.container.exceptions.ConnectorException;
 import com.sanshao90.easy.container.io.Connector;
 import com.sanshao90.easy.container.utils.IoUtils;
@@ -26,12 +26,11 @@ public class SocketConnector extends Connector {
     private ServerSocket serverSocket;
     private volatile ServerStatus serverStatus = ServerStatus.STOPED;
 
-    public SocketConnector(int port) {
-        this.port = port;
-    }
+    private EventListener<Socket> eventListener;
 
-    public SocketConnector(ServerConfig serverConfig) {
-        this(serverConfig.getPort());
+    public SocketConnector(int port, EventListener<Socket> eventListener) {
+        this.port = port;
+        this.eventListener = eventListener;
     }
 
     @Override
@@ -52,12 +51,17 @@ public class SocketConnector extends Connector {
                 Socket socket = null;
                 try {
                     socket = serverSocket.accept();
+                    whenAccept(socket);
                     logger.info("新增连接 -- {} : {}", socket.getInetAddress(), socket.getPort());
                 } catch (IOException e) {
                     logger.error("SocketConnector.acceptConnect IOException", e);
                 }
             }
         }).start();
+    }
+
+    private void whenAccept(Socket socket) throws ConnectorException {
+        eventListener.onEvent(socket);
     }
 
     @Override
