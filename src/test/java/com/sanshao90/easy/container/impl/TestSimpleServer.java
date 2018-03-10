@@ -1,5 +1,6 @@
 package com.sanshao90.easy.container.impl;
 
+import com.sanshao90.TestBase;
 import com.sanshao90.easy.container.Server;
 import com.sanshao90.easy.container.ServerFactory;
 import com.sanshao90.easy.container.config.ServerConfig;
@@ -22,7 +23,7 @@ import java.net.SocketAddress;
  * @Author : sanshao90
  * @Date : 2018/3/10
  */
-public class TestSimpleServer {
+public class TestSimpleServer extends TestBase {
 
     private static final Logger logger = LoggerFactory.getLogger(TestSimpleServer.class);
 
@@ -38,22 +39,9 @@ public class TestSimpleServer {
 
     @Test
     public void test_server_thread() {
-        if (ServerStatus.STOPED.equals(server.getServerStatus())) {
-            new Thread(() -> {
-                try {
-                    server.start();
-                } catch (IOException e) {
-                    logger.error("TestSimpleServer.test_server_thread IOException", e);
-                }
-            }).start();
-            while (ServerStatus.STOPED.equals(server.getServerStatus())) {
-                try {
-                    Thread.sleep(TIMEOUT);
-                } catch (InterruptedException e) {
-                    logger.error("TestSimpleServer.test_server_thread InterruptedException", e);
-                }
-            }
-        }
+        super.startServer(server);
+        super.waitServerRun(server);
+
         Socket socket = new Socket();
         SocketAddress socketAddress = new InetSocketAddress("127.0.0.1", ServerConfig.DEFAULT_PORT);
         try {

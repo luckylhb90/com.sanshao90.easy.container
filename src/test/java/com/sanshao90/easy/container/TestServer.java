@@ -1,5 +1,6 @@
 package com.sanshao90.easy.container;
 
+import com.sanshao90.TestBase;
 import com.sanshao90.easy.container.config.ServerConfig;
 import com.sanshao90.easy.container.enums.ServerStatus;
 import org.junit.Assert;
@@ -14,9 +15,9 @@ import java.io.IOException;
  * @Author : sanshao90
  * @Date : 2018/3/10
  */
-public class TestServer {
+public class TestServer extends TestBase {
 
-    private Server server ;
+    private Server server;
 
     @Before
     public void before() {
@@ -26,19 +27,20 @@ public class TestServer {
 
     @Test
     public void test_start() throws IOException {
-        server.start();
-        Assert.assertTrue("服务启动状态-"+ServerStatus.STARTED, ServerStatus.STARTED.equals(server.getServerStatus()));
+        super.startServer(server);
+        super.waitServerRun(server);
+        Assert.assertTrue("服务启动状态-" + ServerStatus.STARTED, ServerStatus.STARTED.equals(server.getServerStatus()));
     }
 
     @Test
     public void test_stop() {
         server.stop();
-        Assert.assertTrue("服务启动状态-"+ServerStatus.STOPED, ServerStatus.STOPED.equals(server.getServerStatus()));
+        Assert.assertTrue("服务启动状态-" + ServerStatus.STOPED, ServerStatus.STOPED.equals(server.getServerStatus()));
     }
 
     @Test
-    public void test_port(){
+    public void test_port() {
         int port = server.getPort();
-        Assert.assertTrue("默认端口号-"+ServerConfig.DEFAULT_PORT, ServerConfig.DEFAULT_PORT == port);
+        Assert.assertTrue("默认端口号-" + ServerConfig.DEFAULT_PORT, ServerConfig.DEFAULT_PORT == port);
     }
 }

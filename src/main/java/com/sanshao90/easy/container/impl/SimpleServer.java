@@ -43,14 +43,7 @@ public class SimpleServer implements Server {
         this.serverSocket = new ServerSocket(this.port);
         this.status = ServerStatus.STARTED;
         logger.info("服务启动。。。{}", status);
-        try {
-            while (true) {
-                socket = serverSocket.accept();// 连接队列中取出一个连接，否则循环等待获取
-                logger.info("新增连接--{}:{}", socket.getInetAddress(), socket.getPort());
-            }
-        } catch (IOException e) {
-            logger.error("SimpleServer.start IOException", e);
-        }
+        accept();
     }
 
     /**
@@ -86,5 +79,20 @@ public class SimpleServer implements Server {
      */
     public int getPort() {
         return port;
+    }
+
+
+    /**
+     * 接受客户端请求
+     */
+    private void accept() {
+        while (true) {
+            try {
+                Socket socket = serverSocket.accept();
+                logger.info("接受新连接--{}: {}", socket.getInetAddress(), socket.getPort());
+            } catch (IOException e) {
+                logger.error("SimpleServer.accept IOException", e);
+            }
+        }
     }
 }
