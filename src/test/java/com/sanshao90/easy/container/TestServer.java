@@ -6,6 +6,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+
 /**
  * @Project : com.sanshao90.easy.container
  * @Description : TODO
@@ -23,7 +25,7 @@ public class TestServer {
     }
 
     @Test
-    public void test_start() {
+    public void test_start() throws IOException {
         server.start();
         Assert.assertTrue("服务启动状态-"+ServerStatus.STARTED, ServerStatus.STARTED.equals(server.getServerStatus()));
     }

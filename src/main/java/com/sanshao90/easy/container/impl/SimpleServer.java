@@ -3,6 +3,8 @@ package com.sanshao90.easy.container.impl;
 import com.sanshao90.easy.container.Server;
 import com.sanshao90.easy.container.config.ServerConfig;
 import com.sanshao90.easy.container.enums.ServerStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -16,12 +18,13 @@ import java.net.Socket;
  */
 public class SimpleServer implements Server {
 
+    private static final Logger logger = LoggerFactory.getLogger(SimpleServer.class);
+
     private volatile ServerStatus status = ServerStatus.STOPED;
 
     private int port;
 
     private ServerSocket serverSocket;
-    private Socket socket;
 
     public SimpleServer() {
         this(new ServerConfig());
@@ -35,26 +38,18 @@ public class SimpleServer implements Server {
      * 启动容器
      */
     @Override
-    public void start() {
+    public void start() throws IOException {
         Socket socket = null;
+        this.serverSocket = new ServerSocket(this.port);
+        this.status = ServerStatus.STARTED;
+        logger.info("服务启动。。。{}", status);
         try {
-            this.serverSocket = new ServerSocket(this.port);
-            this.status = ServerStatus.STARTED;
-            System.out.println("服务启动。。。" + status);
             while (true) {
-                this.socket = serverSocket.accept();// 连接队列中取出一个连接，否则循环等待获取
-                System.out.println("新增连接：" + socket.getInetAddress() + ":" + socket.getPort());
+                socket = serverSocket.accept();// 连接队列中取出一个连接，否则循环等待获取
+                logger.info("新增连接--{}:{}", socket.getInetAddress(), socket.getPort());
             }
         } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (socket != null) {
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            logger.error("SimpleServer.start IOException", e);
         }
     }
 
@@ -67,10 +62,10 @@ public class SimpleServer implements Server {
             if (this.serverSocket != null) {
                 this.serverSocket.close();
                 this.status = ServerStatus.STOPED;
-                System.out.println("服务停止。。。" + status);
+                logger.info("服务停止。。。{}", status);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("SimpleServer.stop IOException", e);
         }
     }
 
@@ -84,6 +79,11 @@ public class SimpleServer implements Server {
         return this.status;
     }
 
+    /**
+     * 获取端口号
+     *
+     * @return
+     */
     public int getPort() {
         return port;
     }

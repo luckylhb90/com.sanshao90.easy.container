@@ -2,6 +2,8 @@ package com.sanshao90.easy.container;
 
 import com.sanshao90.easy.container.enums.ServerStatus;
 
+import java.io.IOException;
+
 /**
  * @Project : com.sanshao90.easy.container
  * @Description : 容器启动接口
@@ -13,7 +15,7 @@ public interface Server {
     /**
      * 启动容器
      */
-    void start();
+    void start() throws IOException;
 
     /**
      * 关闭容器
