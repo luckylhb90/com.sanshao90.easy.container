@@ -17,4 +17,12 @@ public enum ServerStatus {
      */
     STOPED;
 
+    public static boolean isStart(ServerStatus serverStatus) {
+        return STARTED.equals(serverStatus);
+    }
+
+    public static boolean isStop(ServerStatus serverStatus) {
+        return STOPED.equals(serverStatus);
+    }
+
 }

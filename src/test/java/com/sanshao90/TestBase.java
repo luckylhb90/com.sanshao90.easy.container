@@ -2,10 +2,9 @@ package com.sanshao90;
 
 import com.sanshao90.easy.container.Server;
 import com.sanshao90.easy.container.enums.ServerStatus;
+import com.sanshao90.easy.container.exceptions.ConnectorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 /**
  * @Project : com.sanshao90.easy.container
@@ -25,7 +24,7 @@ public class TestBase {
         new Thread(() -> {
             try {
                 server.start();
-            } catch (IOException e) {
+            } catch (ConnectorException e) {
                 throw new RuntimeException(e);
             }
         }).start();

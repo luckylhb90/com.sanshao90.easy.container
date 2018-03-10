@@ -3,12 +3,11 @@ package com.sanshao90.easy.container.impl;
 import com.sanshao90.easy.container.Server;
 import com.sanshao90.easy.container.config.ServerConfig;
 import com.sanshao90.easy.container.enums.ServerStatus;
+import com.sanshao90.easy.container.exceptions.ConnectorException;
+import com.sanshao90.easy.container.io.Connector;
+import com.sanshao90.easy.container.io.impl.SocketConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 
 /**
  * @Project : com.sanshao90.easy.container
@@ -24,7 +23,7 @@ public class SimpleServer implements Server {
 
     private int port;
 
-    private ServerSocket serverSocket;
+    private Connector socketConnector;
 
     public SimpleServer() {
         this(new ServerConfig());
@@ -32,18 +31,17 @@ public class SimpleServer implements Server {
 
     public SimpleServer(ServerConfig serverConfig) {
         this.port = serverConfig.getPort();
+        socketConnector = new SocketConnector(serverConfig);
     }
 
     /**
      * 启动容器
      */
     @Override
-    public void start() throws IOException {
-        Socket socket = null;
-        this.serverSocket = new ServerSocket(this.port);
+    public void start() throws ConnectorException {
+        socketConnector.start();
         this.status = ServerStatus.STARTED;
         logger.info("服务启动。。。{}", status);
-        accept();
     }
 
     /**
@@ -51,15 +49,9 @@ public class SimpleServer implements Server {
      */
     @Override
     public void stop() {
-        try {
-            if (this.serverSocket != null) {
-                this.serverSocket.close();
-                this.status = ServerStatus.STOPED;
-                logger.info("服务停止。。。{}", status);
-            }
-        } catch (IOException e) {
-            logger.error("SimpleServer.stop IOException", e);
-        }
+        socketConnector.stop();
+        this.status = ServerStatus.STOPED;
+        logger.info("服务停止。。。{}", status);
     }
 
     /**
@@ -77,22 +69,9 @@ public class SimpleServer implements Server {
      *
      * @return
      */
+    @Override
     public int getPort() {
         return port;
     }
 
-
-    /**
-     * 接受客户端请求
-     */
-    private void accept() {
-        while (true) {
-            try {
-                Socket socket = serverSocket.accept();
-                logger.info("接受新连接--{}: {}", socket.getInetAddress(), socket.getPort());
-            } catch (IOException e) {
-                logger.error("SimpleServer.accept IOException", e);
-            }
-        }
-    }
 }

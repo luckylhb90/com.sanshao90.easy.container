@@ -5,6 +5,7 @@ import com.sanshao90.easy.container.Server;
 import com.sanshao90.easy.container.ServerFactory;
 import com.sanshao90.easy.container.config.ServerConfig;
 import com.sanshao90.easy.container.enums.ServerStatus;
+import com.sanshao90.easy.container.exceptions.ConnectorException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -58,7 +59,7 @@ public class TestSimpleServer extends TestBase {
         if (ServerStatus.STOPED.equals(server.getServerStatus())) {
             try {
                 server.start();
-            } catch (IOException e) {
+            } catch (ConnectorException e) {
                 logger.error("TestSimpleServer.test_request IOException", e);
             }
         }
