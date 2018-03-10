@@ -8,7 +8,7 @@ import java.security.PrivilegedActionException;
  * @Author : sanshao90
  * @Date : 2018/3/10
  */
-public class ConnectorException extends Exception {
+public class ConnectorException extends RuntimeException {
 
     /**
      * Constructs a new exception with {@code null} as its detail message.

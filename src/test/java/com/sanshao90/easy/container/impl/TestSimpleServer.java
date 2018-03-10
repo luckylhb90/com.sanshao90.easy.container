@@ -43,13 +43,18 @@ public class TestSimpleServer extends TestBase {
         super.startServer(server);
         super.waitServerRun(server);
 
+        connect();
+    }
+
+    private void connect() {
         Socket socket = new Socket();
-        SocketAddress socketAddress = new InetSocketAddress("127.0.0.1", ServerConfig.DEFAULT_PORT);
+        SocketAddress endpoint = new InetSocketAddress("localhost", ServerConfig.DEFAULT_PORT);
         try {
-            socket.connect(socketAddress);
-            Assert.assertTrue("服务器启动后，发起请求", socket.isConnected());
+            // 与服务器建立连接，超时时间为 TIMEOUT
+            socket.connect(endpoint, TIMEOUT);
+            Assert.assertTrue("服务器启动后，可以接受请求", socket.isConnected());
         } catch (IOException e) {
-            logger.error("TestSimpleServer.test_server_thread IOException", e);
+            logger.error("TestSimpleServer.connect IOException ", e);
         }
     }
 
@@ -67,15 +72,7 @@ public class TestSimpleServer extends TestBase {
 
     @Test
     public void test_connect() {
-        Socket socket = new Socket();
-        SocketAddress endpoint = new InetSocketAddress("localhost", ServerConfig.DEFAULT_PORT);
-        try {
-            // 与服务器建立连接，超时时间为 TIMEOUT
-            socket.connect(endpoint, TIMEOUT);
-            Assert.assertTrue("服务器启动后，可以接受请求", socket.isConnected());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        connect();
     }
 
     @After

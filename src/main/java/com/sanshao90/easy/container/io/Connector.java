@@ -16,7 +16,7 @@ public abstract class Connector implements LifeCycle {
     private static final Logger logger = LoggerFactory.getLogger(Connector.class);
 
     @Override
-    public void start() throws ConnectorException {
+    public void start()  {
         init();
         acceptConnect();
     }

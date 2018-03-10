@@ -5,9 +5,10 @@ import com.sanshao90.easy.container.config.ServerConfig;
 import com.sanshao90.easy.container.enums.ServerStatus;
 import com.sanshao90.easy.container.exceptions.ConnectorException;
 import com.sanshao90.easy.container.io.Connector;
-import com.sanshao90.easy.container.io.impl.SocketConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * @Project : com.sanshao90.easy.container
@@ -23,15 +24,11 @@ public class SimpleServer implements Server {
 
     private int port;
 
-    private Connector socketConnector;
+    private List<Connector> connectors;
 
-    public SimpleServer() {
-        this(new ServerConfig());
-    }
-
-    public SimpleServer(ServerConfig serverConfig) {
+    public SimpleServer(ServerConfig serverConfig, List<Connector> connectors) {
         this.port = serverConfig.getPort();
-        socketConnector = new SocketConnector(serverConfig);
+        this.connectors = connectors;
     }
 
     /**
@@ -39,7 +36,7 @@ public class SimpleServer implements Server {
      */
     @Override
     public void start() throws ConnectorException {
-        socketConnector.start();
+        this.connectors.stream().forEach(connector -> connector.start());
         this.status = ServerStatus.STARTED;
         logger.info("服务启动。。。{}", status);
     }
@@ -49,7 +46,7 @@ public class SimpleServer implements Server {
      */
     @Override
     public void stop() {
-        socketConnector.stop();
+        this.connectors.stream().forEach(connector -> connector.stop());
         this.status = ServerStatus.STOPED;
         logger.info("服务停止。。。{}", status);
     }
