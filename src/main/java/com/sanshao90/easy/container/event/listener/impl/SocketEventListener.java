@@ -1,13 +1,13 @@
 package com.sanshao90.easy.container.event.listener.impl;
 
-import com.sanshao90.easy.container.event.listener.EventListener;
+import com.sanshao90.easy.container.event.handler.EventHandler;
+import com.sanshao90.easy.container.event.listener.AbstractEventListener;
 import com.sanshao90.easy.container.exceptions.EventException;
+import com.sanshao90.easy.container.exceptions.HandlerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
 import java.net.Socket;
-import java.util.Scanner;
 
 /**
  * @Project : com.sanshao90.easy.container
@@ -15,9 +15,16 @@ import java.util.Scanner;
  * @Author : sanshao90
  * @Date : 2018/3/11
  */
-public class SocketEventListener implements EventListener<Socket> {
+public class SocketEventListener extends AbstractEventListener<Socket> {
 
     private static final Logger logger = LoggerFactory.getLogger(SocketEventListener.class);
+
+    private final EventHandler<Socket> eventHandler;
+
+    public SocketEventListener(EventHandler<Socket> eventHandler) {
+        this.eventHandler = eventHandler;
+    }
+
 
     /**
      * 事件发生时的回调方法
@@ -29,35 +36,20 @@ public class SocketEventListener implements EventListener<Socket> {
     public void onEvent(Socket socket) throws EventException {
         logger.info("新增连接 -- {} : {}", socket.getInetAddress(), socket.getPort());
         try {
-            echo(socket);
-        } catch (IOException e) {
+            eventHandler.handler(socket);
+        } catch (HandlerException e) {
             throw new EventException(e);
         }
     }
 
-    private void echo(Socket socket) throws IOException {
-        InputStream inputStream = null;
-        OutputStream outputStream = null;
-
-        inputStream = socket.getInputStream();
-        outputStream = socket.getOutputStream();
-        Scanner scanner = new Scanner(inputStream);
-        PrintWriter printWriter = new PrintWriter(outputStream);
-
-        printWriter.append("Server connected.welcome to echo. \n");
-        printWriter.flush();
-
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            if ("stop".equals(line)) {
-                printWriter.append("bye bye. \n");
-                printWriter.flush();
-                break;
-            } else {
-                printWriter.append(line);
-                printWriter.append("\n");
-                printWriter.flush();
-            }
-        }
+    /**
+     * 返回具体的事件处理器
+     *
+     * @param event
+     * @return
+     */
+    @Override
+    protected EventHandler<Socket> getEventHandler(Socket event) {
+        return eventHandler;
     }
 }

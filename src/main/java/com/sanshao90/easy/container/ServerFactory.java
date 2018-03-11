@@ -3,6 +3,8 @@ package com.sanshao90.easy.container;
 import com.google.common.collect.Lists;
 import com.sanshao90.easy.container.config.ServerConfig;
 import com.sanshao90.easy.container.config.SocketConnectorConfig;
+import com.sanshao90.easy.container.event.handler.EventHandler;
+import com.sanshao90.easy.container.event.handler.impl.EchoEventHandler;
 import com.sanshao90.easy.container.event.listener.impl.SocketEventListener;
 import com.sanshao90.easy.container.impl.SimpleServer;
 import com.sanshao90.easy.container.io.Connector;
@@ -26,7 +28,8 @@ public class ServerFactory {
      */
     public static Server getSimpleServer(ServerConfig serverConfig) {
         List<Connector> connectors = Lists.newArrayList();
-        SocketEventListener socketEventListener = new SocketEventListener();
+        EventHandler eventHandler = new EchoEventHandler();
+        SocketEventListener socketEventListener = new SocketEventListener(eventHandler);
         ConnectorFactory connectorFactory = new SocketConnectorFactory(new SocketConnectorConfig(serverConfig.getPort()), socketEventListener);
         connectors.add(connectorFactory.getConnector());
         return new SimpleServer(serverConfig, connectors);

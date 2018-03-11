@@ -1,5 +1,6 @@
 package com.sanshao90.easy.container.event.listener;
 
+import com.sanshao90.easy.container.event.handler.EventHandler;
 import org.w3c.dom.events.EventException;
 
 /**
@@ -16,4 +17,5 @@ public interface EventListener<T> {
      * @throws EventException 统一异常处理
      */
     void onEvent(T event) throws EventException;
+
 }
