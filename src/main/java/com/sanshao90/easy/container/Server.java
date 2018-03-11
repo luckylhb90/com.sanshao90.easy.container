@@ -2,8 +2,9 @@ package com.sanshao90.easy.container;
 
 import com.sanshao90.easy.container.enums.ServerStatus;
 import com.sanshao90.easy.container.exceptions.ConnectorException;
+import com.sanshao90.easy.container.connect.Connector;
 
-import java.io.IOException;
+import java.util.List;
 
 /**
  * @Project : com.sanshao90.easy.container
@@ -25,13 +26,14 @@ public interface Server {
 
     /**
      * 获取服务状态
+     *
      * @return
      */
     ServerStatus getServerStatus();
 
     /**
-     * 获取服务器端口
-     * @return
+     * 获取服务器管理的Connector对象列表
      */
-    int getPort();
+    List<Connector> getConnectorList();
+
 }

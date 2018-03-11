@@ -1,14 +1,16 @@
-package com.sanshao90.easy.container.io.impl;
+package com.sanshao90.easy.container.connect.socket.impl;
 
 import com.sanshao90.easy.container.enums.ServerStatus;
 import com.sanshao90.easy.container.event.listener.EventListener;
 import com.sanshao90.easy.container.exceptions.ConnectorException;
-import com.sanshao90.easy.container.io.Connector;
+import com.sanshao90.easy.container.connect.AbstractConnector;
 import com.sanshao90.easy.container.utils.IoUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -18,27 +20,32 @@ import java.net.Socket;
  * @Author : sanshao90
  * @Date : 2018/3/10
  */
-public class SocketConnector extends Connector {
+public class SocketConnector extends AbstractConnector {
 
     private static final Logger logger = LoggerFactory.getLogger(SocketConnector.class);
 
-    private int port;
     private ServerSocket serverSocket;
-    private volatile ServerStatus serverStatus = ServerStatus.STOPED;
-
-    private EventListener<Socket> eventListener;
+    protected EventListener<Socket> eventListener;
 
     public SocketConnector(int port, EventListener<Socket> eventListener) {
+        this(port, LOCOLHOST, DEFAULT_BACKLOG, eventListener);
+    }
+
+    public SocketConnector(int port, String host, int backLog, EventListener<Socket> eventListener) {
         this.port = port;
+        this.host = StringUtils.isBlank(host) ? LOCOLHOST : host;
+        this.backLog = backLog;
         this.eventListener = eventListener;
     }
 
     @Override
     protected void init() throws ConnectorException {
         try {
-            this.serverSocket = new ServerSocket(this.port);
+            InetAddress inetAddress = InetAddress.getByName(this.host);
+            this.serverSocket = new ServerSocket(this.port, backLog, inetAddress);
             this.serverStatus = ServerStatus.STARTED;
         } catch (IOException e) {
+            logger.error("SocketConnector.init IOException ", e);
             throw new ConnectorException(e);
         }
 
@@ -69,5 +76,25 @@ public class SocketConnector extends Connector {
         IoUtils.close(serverSocket);
         this.serverStatus = ServerStatus.STOPED;
         logger.info("服务停止");
+    }
+
+    /**
+     * 获取服务端口
+     *
+     * @return
+     */
+    @Override
+    public int getPort() {
+        return this.port;
+    }
+
+    /**
+     * 获取服务的ip or 主机名
+     *
+     * @return
+     */
+    @Override
+    public String getHost() {
+        return this.host;
     }
 }

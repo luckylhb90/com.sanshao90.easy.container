@@ -1,9 +1,9 @@
-package com.sanshao90.easy.container.io.impl;
+package com.sanshao90.easy.container.connect.socket.impl;
 
 import com.sanshao90.easy.container.config.SocketConnectorConfig;
 import com.sanshao90.easy.container.event.listener.EventListener;
-import com.sanshao90.easy.container.io.Connector;
-import com.sanshao90.easy.container.io.ConnectorFactory;
+import com.sanshao90.easy.container.connect.AbstractConnector;
+import com.sanshao90.easy.container.connect.ConnectorFactory;
 
 /**
  * @Project : com.sanshao90.easy.container
@@ -22,7 +22,7 @@ public class SocketConnectorFactory implements ConnectorFactory {
     }
 
     @Override
-    public Connector getConnector() {
+    public AbstractConnector getConnector() {
         return new SocketConnector(this.socketConnectorConfig.getPort(), eventListener);
     }
 }

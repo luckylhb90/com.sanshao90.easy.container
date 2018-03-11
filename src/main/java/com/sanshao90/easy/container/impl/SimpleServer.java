@@ -1,10 +1,9 @@
 package com.sanshao90.easy.container.impl;
 
 import com.sanshao90.easy.container.Server;
-import com.sanshao90.easy.container.config.ServerConfig;
 import com.sanshao90.easy.container.enums.ServerStatus;
 import com.sanshao90.easy.container.exceptions.ConnectorException;
-import com.sanshao90.easy.container.io.Connector;
+import com.sanshao90.easy.container.connect.Connector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,12 +21,9 @@ public class SimpleServer implements Server {
 
     private volatile ServerStatus status = ServerStatus.STOPED;
 
-    private int port;
-
     private List<Connector> connectors;
 
-    public SimpleServer(ServerConfig serverConfig, List<Connector> connectors) {
-        this.port = serverConfig.getPort();
+    public SimpleServer(List<Connector> connectors) {
         this.connectors = connectors;
     }
 
@@ -62,13 +58,12 @@ public class SimpleServer implements Server {
     }
 
     /**
-     * 获取端口号
-     *
-     * @return
+     * 获取服务器管理的Connector对象列表
      */
     @Override
-    public int getPort() {
-        return port;
+    public List<Connector> getConnectorList() {
+        return connectors;
     }
+
 
 }

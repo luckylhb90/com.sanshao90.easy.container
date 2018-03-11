@@ -1,4 +1,4 @@
-package com.sanshao90.easy.container.io;
+package com.sanshao90.easy.container.connect;
 
 /**
  * @Project : com.sanshao90.easy.container
@@ -8,5 +8,5 @@ package com.sanshao90.easy.container.io;
  */
 public interface ConnectorFactory {
 
-    Connector getConnector();
+    AbstractConnector getConnector();
 }
