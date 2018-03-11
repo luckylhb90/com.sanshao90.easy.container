@@ -1,7 +1,7 @@
 package com.sanshao90.easy.container.io.impl;
 
 import com.sanshao90.easy.container.config.SocketConnectorConfig;
-import com.sanshao90.easy.container.event.listener.impl.SocketEventListener;
+import com.sanshao90.easy.container.event.listener.EventListener;
 import com.sanshao90.easy.container.io.Connector;
 import com.sanshao90.easy.container.io.ConnectorFactory;
 
@@ -14,15 +14,15 @@ import com.sanshao90.easy.container.io.ConnectorFactory;
 public class SocketConnectorFactory implements ConnectorFactory {
 
     private final SocketConnectorConfig socketConnectorConfig;
-    private final SocketEventListener socketEventListener;
+    private final EventListener eventListener;
 
-    public SocketConnectorFactory(SocketConnectorConfig socketConnectorConfig, SocketEventListener socketEventListener) {
+    public SocketConnectorFactory(SocketConnectorConfig socketConnectorConfig, EventListener eventListener) {
         this.socketConnectorConfig = socketConnectorConfig;
-        this.socketEventListener = socketEventListener;
+        this.eventListener = eventListener;
     }
 
     @Override
     public Connector getConnector() {
-        return new SocketConnector(this.socketConnectorConfig.getPort(), socketEventListener);
+        return new SocketConnector(this.socketConnectorConfig.getPort(), eventListener);
     }
 }
